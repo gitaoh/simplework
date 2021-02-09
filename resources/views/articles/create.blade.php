@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('header')
+@section('head')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 @endsection
 
@@ -49,6 +49,21 @@
                         </textarea>
                         @error('excerpt')
                             <p class="help is-danger">{{$message}}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="title" class="body">Tags</label>
+                    <div class="control select is-multiple">
+                        <select name="tags[]" id="" multiple>
+                            @foreach($tags as $tag)
+                                <option value="{{$tag->id}}">{{$tag->name}}</option>
+                            @endforeach
+                        </select>
+
+                        @error('tags')
+                        <p class="help is-danger">{{$message}}</p>
                         @enderror
                     </div>
                 </div>

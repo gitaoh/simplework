@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Tag;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -18,7 +19,15 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        return view('articles.index', ['articles' => Article::take(3)->latest()->get()]);
+        $tag = request('tag');
+
+        if ($tag) {
+            $articles = Tag::where('name', $tag)->firstOrFail()->articles;
+        } else {
+            $articles = Article::latest()->get();
+        }
+
+        return view('articles.index', ['articles' => $articles]);
     }
 
     /**
@@ -28,7 +37,7 @@ class ArticlesController extends Controller
      */
     public function create()
     {
-        return view('articles.create');
+        return view('articles.create', ['tags'=> Tag::all()]);
     }
 
     /**
@@ -39,7 +48,13 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
-        Article::create($this->validateArticles());
+        $this->validateArticles();
+        $article = new Article($request->all(['title', 'body', 'excerpt']));
+
+        $article->user_id = 1;
+        $article->save();
+
+        $article->tags()->attach($request->get('tags'));
 
         return redirect('/articles');
     }
@@ -50,6 +65,7 @@ class ArticlesController extends Controller
             'title' => 'required',
             'excerpt' => 'required',
             'body' => 'required',
+            'tags'=>'exists:tags,id'
         ]);
     }
 
@@ -82,7 +98,7 @@ class ArticlesController extends Controller
      * @param Article $article
      * @return Application|Factory|View|Response
      */
-    public function update(Article $article)
+    public function update(Request $request, Article $article)
     {
         Article::update($this->validateArticles());
 

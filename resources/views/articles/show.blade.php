@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('header')
+@section('head')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 @endsection
 
@@ -17,8 +17,14 @@
                     </div>
                     <span class="byline">{{$article->exerpt}}</span>
                 </div>
+
                 <p><img src="{{asset('images/banner.jpg')}}" alt="" class="image image-full" /> </p>
+
                 <article>{{$article->body}}</article>
+
+                @foreach($article->tags as $tag)
+                    <a class="ml-2" href="{{route('articles.index', ['tag'=>$tag->name])}}">{{$tag->name}}</a>
+                @endforeach
             </div>
         </div>
     </div>

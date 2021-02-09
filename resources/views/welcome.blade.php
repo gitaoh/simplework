@@ -9,7 +9,7 @@
                 <a href="#" class="button">Etiam posuere</a> </div>
         </div>
     </div>
-<@endsection>
+@endsection
 
 @section('content')
 
